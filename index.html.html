@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spot Pizza - Menú & Pedidos Online</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#E53935',
+                            darkRed: '#C62828',
+                            yellow: '#FFB300',
+                            green: '#2E7D32',
+                            dark: '#1A1A1A',
+                            card: '#242424'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .pizza-shadow {
+            box-shadow: 0 10px 25px -5px rgba(229, 57, 53, 0.4);
+        }
+        .yellow-glow {
+            box-shadow: 0 0 20px rgba(255, 179, 0, 0.3);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #E53935;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-white font-sans antialiased min-h-screen flex flex-col justify-between pb-24 md:pb-0">
+
+    <!-- HEADER & NAVIGATION -->
+    <header class="sticky top-0 z-40 bg-brand-dark/95 backdrop-blur-md border-b border-gray-800 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- LOGO BRAND -->
+            <a href="#" class="flex items-center gap-3 group">
+                <!-- SVG Recreation of Spot Pizza Logo -->
+                <div class="w-12 h-12 relative flex items-center justify-center bg-zinc-900 rounded-full border-2 border-brand-yellow group-hover:scale-105 transition-transform">
+                    <svg viewBox="0 0 100 100" class="w-10 h-10">
+                        <!-- Crust -->
+                        <path d="M 15 35 Q 50 15 85 35 L 75 45 Q 50 30 25 45 Z" fill="#E65100" />
+                        <!-- Cheese/Body -->
+                        <path d="M 22 45 Q 50 30 78 45 L 50 85 Z" fill="#FFB300" />
+                        <!-- Pepperoni & Toppings -->
+                        <circle cx="38" cy="50" r="6" fill="#E53935" />
+                        <circle cx="62" cy="52" r="4" fill="#2E7D32" />
+                        <circle cx="50" cy="65" r="3" fill="#333" />
+                        <!-- Italian Flag Triangle below -->
+                        <path d="M 40 85 L 50 98 L 43 85 Z" fill="#2E7D32" />
+                        <path d="M 43 85 L 50 98 L 57 85 Z" fill="#FFFFFF" />
+                        <path d="M 57 85 L 50 98 L 60 85 Z" fill="#E53935" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-wider text-white uppercase block leading-none">SPOT <span class="text-brand-yellow">PIZZA</span></span>
+                    <span class="text-[10px] text-gray-400 tracking-widest font-semibold uppercase">Calidad & Sabor</span>
+                </div>
+            </a>
+
+            <!-- DESKTOP NAV -->
+            <nav class="hidden md:flex items-center space-x-8 font-semibold text-sm">
+                <a href="#menu" class="hover:text-brand-yellow transition-colors">Menú</a>
+                <a href="#promos" class="hover:text-brand-yellow transition-colors">Promociones</a>
+                <a href="#contacto" class="hover:text-brand-yellow transition-colors">Ubicación</a>
+            </nav>
+
+            <!-- CALL TO ACTION / CART BUTTON -->
+            <div class="flex items-center gap-3">
+                <button onclick="toggleCartModal()" class="relative bg-brand-red hover:bg-brand-darkRed text-white px-4 py-2.5 rounded-full font-bold flex items-center gap-2 transition-all transform active:scale-95 pizza-shadow">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="hidden sm:inline">Mi Pedido</span>
+                    <span id="cart-badge" class="bg-brand-yellow text-brand-dark text-xs font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative bg-gradient-to-b from-zinc-900 via-brand-dark to-zinc-950 py-12 md:py-20 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="text-center md:text-left">
+                    <span class="inline-block px-4 py-1.5 bg-brand-red/20 border border-brand-red/40 text-brand-yellow font-bold text-xs uppercase tracking-widest rounded-full mb-4">
+                        <i class="fa-solid fa-fire mr-1"></i> ¡Las mejores de la Col. Independencia!
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-4">
+                        EL VERDADERO <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-yellow via-red-500 to-brand-red">SABOR DE LA PIZZA</span>
+                    </h1>
+                    <p class="text-gray-300 text-base sm:text-lg mb-8 max-w-lg">
+                        Masa fresca, ingredientes seleccionados y el queso más fundido. Ordena ahora y recibe directo a tu domicilio o pasa a recoger.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                        <a href="#menu" class="bg-brand-yellow hover:bg-yellow-500 text-brand-dark font-extrabold px-8 py-4 rounded-xl text-center shadow-lg transition-all hover:scale-105 yellow-glow flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-pizza-slice"></i> Ver Menú Completo
+                        </a>
+                        <a href="https://wa.me/526861600777" target="_blank" class="bg-green-600 hover:bg-green-700 text-white font-bold px-8 py-4 rounded-xl text-center shadow-lg transition-all flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> WhatsApp Directo
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Promo Highlight -->
+                <div class="relative flex justify-center">
+                    <div class="relative bg-gradient-to-br from-brand-red to-red-900 p-1 rounded-3xl yellow-glow max-w-sm w-full transform rotate-1 hover:rotate-0 transition-transform duration-300">
+                        <div class="bg-zinc-900 rounded-[22px] p-6 text-center border border-red-500/30">
+                            <span class="bg-brand-yellow text-brand-dark font-black text-xs px-3 py-1 rounded-full uppercase tracking-wider">PROMO ESTRELLA</span>
+                            <div class="my-4">
+                                <span class="text-5xl font-black text-white">$200</span>
+                                <span class="text-gray-400 font-bold block text-sm">PESOS</span>
+                            </div>
+                            <h3 class="text-2xl font-black text-brand-yellow mb-2">2 PIZZAS MEDIANAS</h3>
+                            <p class="text-gray-300 font-semibold mb-6">Sabor Peperoni de 12" (30cm)</p>
+                            <button onclick="addPromoToCart()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-extrabold py-3 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg">
+                                <i class="fa-solid fa-plus-circle"></i> Agregar Promo al Pedido
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MENU SECTION -->
+    <section id="menu" class="py-16 bg-zinc-950">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">NUESTRO MENÚ</h2>
+                <div class="w-24 h-1.5 bg-brand-yellow mx-auto my-3 rounded-full"></div>
+                <p class="text-gray-400 max-w-md mx-auto">Selecciona tus pizzas preferidas, escoge el tamaño perfecto y arma tu pedido.</p>
+            </div>
+
+            <!-- MENU TABS -->
+            <div class="flex justify-center gap-2 mb-10 overflow-x-auto pb-2">
+                <button onclick="filterMenu('all')" id="tab-all" class="menu-tab bg-brand-red text-white px-6 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all shadow-md">
+                    Todo el Menú
+                </button>
+                <button onclick="filterMenu('peperoni')" id="tab-peperoni" class="menu-tab bg-zinc-800 text-gray-300 hover:bg-zinc-700 px-6 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all">
+                    Clásica Peperoni
+                </button>
+                <button onclick="filterMenu('especialidad')" id="tab-especialidad" class="menu-tab bg-zinc-800 text-gray-300 hover:bg-zinc-700 px-6 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all">
+                    Especialidades
+                </button>
+                <button onclick="filterMenu('promos')" id="tab-promos" class="menu-tab bg-zinc-800 text-gray-300 hover:bg-zinc-700 px-6 py-2.5 rounded-full font-bold text-sm whitespace-nowrap transition-all">
+                    Promociones
+                </button>
+            </div>
+
+            <!-- MENU GRID -->
+            <div id="menu-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Items populated via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- PROMOS BANNER SECTION -->
+    <section id="promos" class="py-16 bg-gradient-to-r from-red-950 via-zinc-900 to-red-950 border-y border-red-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-r from-brand-red to-red-800 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="z-10 max-w-xl text-center md:text-left">
+                    <span class="bg-black/40 text-brand-yellow font-black text-xs px-4 py-1.5 rounded-full uppercase tracking-widest border border-brand-yellow/30">
+                        OFERTA ESPECIAL DE LA CASA
+                    </span>
+                    <h3 class="text-3xl sm:text-5xl font-black text-white mt-4 mb-2">2 PIZZAS MEDIANAS</h3>
+                    <p class="text-yellow-200 text-lg font-medium mb-6">Disfruta de 2 Pizzas de Peperoni medianas de 12" por solo <span class="text-3xl font-black text-white">$200 MXN</span></p>
+                    <button onclick="addPromoToCart()" class="bg-brand-yellow text-brand-dark font-extrabold px-8 py-4 rounded-xl shadow-xl hover:bg-yellow-400 transition-all transform hover:scale-105 flex items-center justify-center gap-2 mx-auto md:mx-0">
+                        <i class="fa-solid fa-cart-plus text-xl"></i> ¡Aprovechar Promoción!
+                    </button>
+                </div>
+                <div class="z-10 w-full md:w-auto flex justify-center">
+                    <div class="w-48 h-48 md:w-64 md:h-64 rounded-full bg-brand-yellow/10 border-4 border-brand-yellow/30 flex items-center justify-center p-4 yellow-glow">
+                        <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-2xl">
+                            <!-- Dual Pizzas Illustration -->
+                            <g transform="translate(-10, 0)">
+                                <circle cx="45" cy="50" r="35" fill="#FFB300" stroke="#E65100" stroke-width="4"/>
+                                <circle cx="35" cy="40" r="5" fill="#E53935"/>
+                                <circle cx="55" cy="45" r="5" fill="#E53935"/>
+                                <circle cx="40" cy="60" r="5" fill="#E53935"/>
+                            </g>
+                            <g transform="translate(20, 10)">
+                                <circle cx="45" cy="50" r="35" fill="#FFB300" stroke="#E65100" stroke-width="4"/>
+                                <circle cx="35" cy="40" r="5" fill="#E53935"/>
+                                <circle cx="55" cy="45" r="5" fill="#E53935"/>
+                                <circle cx="40" cy="60" r="5" fill="#E53935"/>
+                            </g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOCATION & CONTACT SECTION -->
+    <section id="contacto" class="py-16 bg-zinc-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl font-black text-white uppercase mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-location-dot text-brand-red"></i> Visítanos o Contactanos
+                    </h2>
+                    
+                    <div class="space-y-6 text-gray-300">
+                        <div class="flex items-start gap-4 p-4 bg-zinc-800/60 rounded-2xl border border-zinc-700/50">
+                            <div class="bg-brand-red/20 p-3 rounded-xl text-brand-red text-xl">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-lg">Dirección</h4>
+                                <p>Acatita de Bajan 1101-A, col. Independencia</p>
+                                <p class="text-xs text-gray-400 mt-1">Mexicali, Baja California</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 bg-zinc-800/60 rounded-2xl border border-zinc-700/50">
+                            <div class="bg-green-500/20 p-3 rounded-xl text-green-500 text-xl">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-lg">Pedidos Telefónicos / WhatsApp</h4>
+                                <p class="text-xl font-bold text-brand-yellow">686 160 07 77</p>
+                                <p class="text-xs text-gray-400 mt-1">Atención rápida y directa</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4 p-4 bg-zinc-800/60 rounded-2xl border border-zinc-700/50">
+                            <div class="bg-brand-yellow/20 p-3 rounded-xl text-brand-yellow text-xl">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-lg">Horario de Atención</h4>
+                                <p>Lunes a Domingo: 12:00 PM - 10:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google Maps Embed Placeholder/Card -->
+                <div class="bg-zinc-800 rounded-3xl p-6 border border-zinc-700 h-96 flex flex-col justify-between relative overflow-hidden group">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-500" style="background-image: url('https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80');"></div>
+                    <div class="relative z-10">
+                        <span class="bg-brand-red text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Ubicación SPOT PIZZA</span>
+                        <h3 class="text-2xl font-black text-white mt-2">Colonia Independencia</h3>
+                    </div>
+                    <div class="relative z-10 bg-zinc-900/90 backdrop-blur-md p-4 rounded-2xl border border-zinc-700">
+                        <p class="text-sm text-gray-300 mb-3"><i class="fa-solid fa-map-pin text-brand-red mr-1"></i> Acatita de Bajan 1101-A</p>
+                        <a href="https://maps.google.com/?q=Acatita+de+Bajan+1101-A+col+Independencia" target="_blank" class="w-full bg-brand-yellow hover:bg-yellow-500 text-brand-dark font-extrabold py-2.5 rounded-xl text-center block text-sm transition-all">
+                            Abrir en Google Maps <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-black py-8 border-t border-zinc-800 text-center text-gray-500 text-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="font-bold text-gray-400 mb-2">SPOT PIZZA © 2026 - Todos los derechos reservados</p>
+            <p class="text-xs">Acatita de Bajan 1101-A, col. Independencia | Cel: 686 160 07 77</p>
+        </div>
+    </footer>
+
+    <!-- CART MODAL / DRAWERS -->
+    <div id="cart-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden transition-opacity flex justify-end">
+        <div class="bg-zinc-900 w-full max-w-md h-full shadow-2xl flex flex-col justify-between border-l border-zinc-800">
+            <!-- Modal Header -->
+            <div class="p-6 border-b border-zinc-800 flex items-center justify-between bg-zinc-950">
+                <div class="flex items-center gap-3">
+                    <i class="fa-solid fa-pizza-slice text-brand-yellow text-2xl"></i>
+                    <h3 class="text-xl font-black text-white">Tu Pedido</h3>
+                </div>
+                <button onclick="toggleCartModal()" class="text-gray-400 hover:text-white text-2xl font-bold">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items List -->
+            <div id="cart-items-container" class="p-6 overflow-y-auto flex-1 space-y-4">
+                <!-- Rendered dynamically -->
+            </div>
+
+            <!-- Modal Footer & Order Details -->
+            <div class="p-6 border-t border-zinc-800 bg-zinc-950 space-y-4">
+                <div class="space-y-2 text-sm">
+                    <label class="block text-gray-400 font-medium">Nombre del Cliente:</label>
+                    <input type="text" id="client-name" placeholder="Ej. Juan Pérez" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-brand-yellow text-sm">
+                    
+                    <label class="block text-gray-400 font-medium pt-2">Tipo de Entrega:</label>
+                    <select id="delivery-type" onchange="toggleAddressInput()" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-brand-yellow text-sm">
+                        <option value="pickup">Pasar a Recoger (Acatita de Bajan 1101-A)</option>
+                        <option value="delivery">Envío a Domicilio</option>
+                    </select>
+
+                    <div id="address-container" class="hidden">
+                        <label class="block text-gray-400 font-medium pt-2">Dirección de Entrega:</label>
+                        <input type="text" id="client-address" placeholder="Calle, número, colonia" class="w-full bg-zinc-800 border border-zinc-700 rounded-xl p-3 text-white focus:outline-none focus:border-brand-yellow text-sm">
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center text-lg font-black pt-2 border-t border-zinc-800">
+                    <span class="text-gray-300">Total a Pagar:</span>
+                    <span id="cart-total" class="text-2xl text-brand-yellow">$0.00</span>
+                </div>
+
+                <button onclick="sendOrderToWhatsApp()" class="w-full bg-green-600 hover:bg-green-500 text-white font-extrabold py-4 rounded-xl text-center shadow-lg transition-all flex items-center justify-center gap-2 text-lg">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i> Enviar Pedido por WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MOBILE BOTTOM BAR -->
+    <div class="fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-800 p-3 md:hidden z-30 flex items-center justify-around">
+        <a href="#menu" class="flex flex-col items-center text-gray-400 hover:text-brand-yellow text-xs font-semibold">
+            <i class="fa-solid fa-utensils text-lg mb-1"></i>
+            Menú
+        </a>
+        <button onclick="toggleCartModal()" class="flex flex-col items-center text-brand-yellow relative text-xs font-semibold">
+            <div class="relative">
+                <i class="fa-solid fa-cart-shopping text-xl mb-1"></i>
+                <span id="mobile-cart-badge" class="absolute -top-2 -right-3 bg-brand-red text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">0</span>
+            </div>
+            Mi Pedido
+        </button>
+        <a href="https://wa.me/526861600777" target="_blank" class="flex flex-col items-center text-green-500 text-xs font-semibold">
+            <i class="fa-brands fa-whatsapp text-xl mb-1"></i>
+            WhatsApp
+        </a>
+    </div>
+
+    <script>
+        // DATA MENU STRUCTURE
+        const menuData = [
+            // PEPERONI
+            {
+                id: 'pep-personal',
+                category: 'peperoni',
+                title: 'Pizza Peperoni Personal',
+                size: '8" Personal',
+                price: 60,
+                desc: 'Deliciosa pizza individual con salsa de tomate especial, abundante queso mozzarella y peperoni premium.',
+                image: 'https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'pep-mediana',
+                category: 'peperoni',
+                title: 'Pizza Peperoni Mediana',
+                size: '12" Mediana',
+                price: 110,
+                desc: 'El tamaño perfecto para compartir. Mozzarella fundido y abundante peperoni crujiente.',
+                image: 'https://images.unsplash.com/photo-1534308983496-4fabb1a015ee?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'pep-familiar',
+                category: 'peperoni',
+                title: 'Pizza Peperoni Familiar',
+                size: '16" Familiar',
+                price: 170,
+                desc: 'Para toda la familia. La reina de la casa en su tamaño más grande.',
+                image: 'https://images.unsplash.com/photo-1604382355076-af4b0eb60143?auto=format&fit=crop&w=600&q=80'
+            },
+
+            // ESPECIALIDADES
+            {
+                id: 'esp-suprema',
+                category: 'especialidad',
+                title: 'Pizza Suprema',
+                specialties: ['Suprema'],
+                sizeOptions: [
+                    { name: '8" Personal', price: 70 },
+                    { name: '12" Mediana', price: 130 },
+                    { name: '16" Familiar', price: 200 }
+                ],
+                desc: 'Cargada con peperoni, carne molida, pimiento verde, cebolla y champiñones frescos.',
+                image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'esp-carnivora',
+                category: 'especialidad',
+                title: 'Pizza Carnívora',
+                specialties: ['Carnívora'],
+                sizeOptions: [
+                    { name: '8" Personal', price: 70 },
+                    { name: '12" Mediana', price: 130 },
+                    { name: '16" Familiar', price: 200 }
+                ],
+                desc: 'Para amantes de la carne: peperoni, jamón, salchicha y carne molida.',
+                image: 'https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'esp-mexicana',
+                category: 'especialidad',
+                title: 'Pizza Mexicana',
+                specialties: ['Mexicana'],
+                sizeOptions: [
+                    { name: '8" Personal', price: 70 },
+                    { name: '12" Mediana', price: 130 },
+                    { name: '16" Familiar', price: 200 }
+                ],
+                desc: 'Sabor local con chorizo, frijol refrito, jalapeño fresco, cebolla y queso.',
+                image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=600&q=80'
+            },
+            {
+                id: 'esp-hawaiana',
+                category: 'especialidad',
+                title: 'Pizza Hawaiana',
+                specialties: ['Hawaiana'],
+                sizeOptions: [
+                    { name: '8" Personal', price: 70 },
+                    { name: '12" Mediana', price: 130 },
+                    { name: '16" Familiar', price: 200 }
+                ],
+                desc: 'La combinación agridulce clásica: jamón seleccionado y trozos de piña jugosa.',
+                image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80'
+            },
+
+            // PROMOS
+            {
+                id: 'promo-2medianas',
+                category: 'promos',
+                title: '2 Pizzas Medianas Peperoni',
+                size: '2 Pizzas de 12"',
+                price: 200,
+                desc: '¡Súper Promoción! Llévate dos pizzas medianas de peperoni a un precio increíble.',
+                image: 'https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=600&q=80'
+            }
+        ];
+
+        // CART STATE
+        let cart = [];
+
+        // RENDER MENU
+        function renderMenu(filter = 'all') {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = '';
+
+            const itemsToDisplay = menuData.filter(item => {
+                if (filter === 'all') return true;
+                return item.category === filter;
+            });
+
+            itemsToDisplay.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-brand-card rounded-2xl overflow-hidden border border-zinc-800 shadow-xl flex flex-col justify-between transform transition-all hover:-translate-y-1 hover:border-brand-yellow/50";
+
+                if (item.sizeOptions) {
+                    // Item with size selection (Especialidades)
+                    card.innerHTML = `
+                        <div>
+                            <div class="h-48 overflow-hidden relative">
+                                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover">
+                                <span class="absolute top-3 right-3 bg-brand-red text-white text-xs font-bold px-3 py-1 rounded-full uppercase">Especialidad</span>
+                            </div>
+                            <div class="p-5">
+                                <h3 class="text-xl font-bold text-white mb-2">${item.title}</h3>
+                                <p class="text-gray-400 text-sm mb-4">${item.desc}</p>
+                                
+                                <label class="block text-xs font-bold text-brand-yellow uppercase mb-1">Selecciona Tamaño:</label>
+                                <select id="select-size-${item.id}" class="w-full bg-zinc-800 text-white border border-zinc-700 rounded-xl p-2.5 text-sm font-semibold focus:outline-none focus:border-brand-yellow">
+                                    ${item.sizeOptions.map(opt => `<option value="${opt.name}|${opt.price}">${opt.name} - $${opt.price} MXN</option>`).join('')}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <button onclick="addSpecialtyToCart('${item.id}', '${item.title}')" class="w-full bg-brand-yellow hover:bg-yellow-500 text-brand-dark font-extrabold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-plus"></i> Agregar al Pedido
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Fixed Price Item
+                    card.innerHTML = `
+                        <div>
+                            <div class="h-48 overflow-hidden relative">
+                                <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover">
+                                <span class="absolute top-3 right-3 bg-brand-yellow text-brand-dark text-xs font-black px-3 py-1 rounded-full uppercase">${item.size}</span>
+                            </div>
+                            <div class="p-5">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="text-xl font-bold text-white">${item.title}</h3>
+                                    <span class="text-xl font-black text-brand-yellow">$${item.price}</span>
+                                </div>
+                                <p class="text-gray-400 text-sm mb-4">${item.desc}</p>
+                            </div>
+                        </div>
+                        <div class="p-5 pt-0">
+                            <button onclick="addToCart('${item.title} (${item.size})', ${item.price})" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-extrabold py-3 rounded-xl transition-all flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-plus"></i> Agregar al Pedido
+                            </button>
+                        </div>
+                    `;
+                }
+
+                grid.appendChild(card);
+            });
+        }
+
+        // TABS FILTERING
+        function filterMenu(category) {
+            document.querySelectorAll('.menu-tab').forEach(tab => {
+                tab.classList.remove('bg-brand-red', 'text-white');
+                tab.classList.add('bg-zinc-800', 'text-gray-300');
+            });
+
+            const activeTab = document.getElementById(`tab-${category}`);
+            if (activeTab) {
+                activeTab.classList.remove('bg-zinc-800', 'text-gray-300');
+                activeTab.classList.add('bg-brand-red', 'text-white');
+            }
+
+            renderMenu(category);
+        }
+
+        // ADD SPECIALTY ITEM
+        function addSpecialtyToCart(id, title) {
+            const select = document.getElementById(`select-size-${id}`);
+            const [sizeName, priceStr] = select.value.split('|');
+            const price = parseFloat(priceStr);
+            addToCart(`${title} (${sizeName})`, price);
+        }
+
+        // ADD PROMO DIRECTLY
+        function addPromoToCart() {
+            addToCart('2 Pizzas Medianas Peperoni (12")', 200);
+            toggleCartModal(true);
+        }
+
+        // ADD TO CART LOGIC
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ name, price, quantity: 1 });
+            }
+            updateCartUI();
+        }
+
+        // REMOVE / CHANGE QTY
+        function changeQty(index, delta) {
+            cart[index].quantity += delta;
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+            updateCartUI();
+        }
+
+        // UPDATE CART UI
+        function updateCartUI() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            document.getElementById('cart-badge').innerText = totalItems;
+            document.getElementById('mobile-cart-badge').innerText = totalItems;
+            document.getElementById('cart-total').innerText = `$${totalPrice.toFixed(2)} MXN`;
+
+            const container = document.getElementById('cart-items-container');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-gray-500">
+                        <i class="fa-solid fa-basket-shopping text-5xl mb-3"></i>
+                        <p class="font-medium">Tu carrito está vacío</p>
+                        <p class="text-xs text-gray-600">¡Agrega algo rico de nuestro menú!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = cart.map((item, index) => `
+                <div class="bg-zinc-800 p-4 rounded-xl border border-zinc-700 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-white text-sm">${item.name}</h4>
+                        <span class="text-brand-yellow font-extrabold text-sm">$${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                    <div class="flex items-center gap-3 bg-zinc-900 px-3 py-1.5 rounded-lg border border-zinc-700">
+                        <button onclick="changeQty(${index}, -1)" class="text-gray-400 hover:text-white font-bold">-</button>
+                        <span class="text-white font-bold text-sm">${item.quantity}</span>
+                        <button onclick="changeQty(${index}, 1)" class="text-gray-400 hover:text-white font-bold">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // TOGGLE CART MODAL
+        function toggleCartModal(forceOpen = false) {
+            const modal = document.getElementById('cart-modal');
+            if (forceOpen || modal.classList.contains('hidden')) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        // TOGGLE DELIVERY ADDRESS
+        function toggleAddressInput() {
+            const type = document.getElementById('delivery-type').value;
+            const container = document.getElementById('address-container');
+            if (type === 'delivery') {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        // SEND ORDER TO WHATSAPP
+        function sendOrderToWhatsApp() {
+            if (cart.length === 0) {
+                alert('Por favor agrega al menos un producto a tu pedido.');
+                return;
+            }
+
+            const clientName = document.getElementById('client-name').value.trim();
+            const deliveryType = document.getElementById('delivery-type').value;
+            const clientAddress = document.getElementById('client-address').value.trim();
+
+            if (!clientName) {
+                alert('Por favor ingresa tu nombre para el pedido.');
+                return;
+            }
+
+            if (deliveryType === 'delivery' && !clientAddress) {
+                alert('Por favor ingresa tu dirección de entrega.');
+                return;
+            }
+
+            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+            // Construct WhatsApp Message
+            let message = `*¡NUEVO PEDIDO - SPOT PIZZA!* 🍕\n\n`;
+            message += `*Cliente:* ${clientName}\n`;
+            message += `*Tipo:* ${deliveryType === 'delivery' ? 'Envío a Domicilio 🛵' : 'Pasa a Recoger 🏪'}\n`;
+            
+            if (deliveryType === 'delivery') {
+                message += `*Dirección:* ${clientAddress}\n`;
+            }
+
+            message += `\n*Detalle del Pedido:*\n`;
+            cart.forEach(item => {
+                message += `• ${item.quantity}x ${item.name} - $${(item.price * item.quantity).toFixed(2)}\n`;
+            });
+
+            message += `\n*TOTAL:* $${totalPrice.toFixed(2)} MXN\n`;
+            message += `\n_Enviado desde la página web de Spot Pizza_`;
+
+            // Phone number: 6861600777 (Mexico: +52)
+            const whatsappUrl = `https://wa.me/526861600777?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        // INITIALIZE MENU ON LOAD
+        window.onload = function() {
+            renderMenu('all');
+        }
+    </script>
+</body>
+</html>
